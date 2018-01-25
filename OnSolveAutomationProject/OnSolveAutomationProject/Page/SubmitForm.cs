@@ -1,4 +1,5 @@
-﻿using OnSolveAutomationProject.Utilities;
+﻿using OnSolveAutomationProject.Model;
+using OnSolveAutomationProject.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
@@ -100,19 +101,19 @@ namespace OnSolveAutomationProject.Page
             return false;
         }
 
-        public void SubmitData(string firstName, string lastName, string streetAddress, string addressLine2, string city, string state, string zipCode, string phoneNumber, string email, string date)
+        public void SubmitData(FormData formData)
         {
             NavigateDone();
-            SetFirstName(firstName);
-            SetLastName(lastName);
-            SetStreetAddress(streetAddress);
-            SetAddressLine2(addressLine2);
-            SetCity(city);
-            SetState(state);
-            SetZipCode(zipCode);
-            SetPhoneNumber(phoneNumber);
-            SetEmailAddress(email);
-            SetDate(date);
+            SetFirstName(formData.FirstName);
+            SetLastName(formData.LastName);
+            SetStreetAddress(formData.StreetAddress);
+            SetAddressLine2(formData.AddressLine2);
+            SetCity(formData.City);
+            SetState(formData.State);
+            SetZipCode(formData.ZipCode);
+            SetPhoneNumber(formData.PhoneNumber);
+            SetEmailAddress(formData.EmailAddress);
+            SetDate(formData.Date);
             ClickSubmitButton();
         }
     }

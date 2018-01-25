@@ -48,6 +48,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebDriver, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Selenium.WebDriver.3.8.0\lib\net45\WebDriver.dll</HintPath>
       <Private>True</Private>
@@ -70,9 +71,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Model\FormData.cs" />
+    <Compile Include="Model\FormSiteAPI.cs" />
     <Compile Include="Page\LoginForm.cs" />
     <Compile Include="Page\SubmitForm.cs" />
     <Compile Include="FormSiteTestcases.cs" />
+    <Compile Include="Page\ThankyouFormSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\WebActions.cs" />
   </ItemGroup>
@@ -83,6 +87,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
