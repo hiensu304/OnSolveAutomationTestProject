@@ -34,7 +34,7 @@ namespace OnSolveAutomationProject.Page
         public bool NavigateDone()
         {
             IWebElement lblObj;
-            if (WebActions.WaitUntilElementVisible(_driver, _labelTitle, out lblObj))
+            if (WebActions.WaitUntilElementVisible(_driver, _labelTitle, out lblObj, 20))
             {
                 return true;
             }

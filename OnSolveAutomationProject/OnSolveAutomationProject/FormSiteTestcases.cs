@@ -23,7 +23,7 @@ namespace OnSolveAutomationProject
         SubmitForm _objHomePage;
         ThankyouFormSite _successSite;
         string _loginSiteUrl = "https://fs28.formsite.com/ecnvietnam/form1/index.html";
-        string _apiDataResultUrl = "https://fs28.formsite.com/api/users/ecnvietnam/forms/form1/results?fs_api_key=Qm8nO3h6auh7";
+        string _apiDataUrl = "https://fs28.formsite.com/api/users/ecnvietnam/forms/form1/";
         
         private TestContext context;
 
@@ -36,18 +36,18 @@ namespace OnSolveAutomationProject
         [TestInitialize]
         public void TestInitialized()
         {
-            //ChromeOptions chrOptions = new ChromeOptions();            
-            //chrOptions.AddArguments("start-maximized");
-            //chrOptions.AddArguments("disable-infobars");
-            //_driver = new ChromeDriver("../../driver", chrOptions);
+            ChromeOptions chrOptions = new ChromeOptions();
+            chrOptions.AddArguments("start-maximized");
+            chrOptions.AddArguments("disable-infobars");
+            _driver = new ChromeDriver("../../driver", chrOptions);
 
-            FirefoxOptions ffOptions = new FirefoxOptions();            
-            ffOptions.AddArguments("--start-maximized");
-            ffOptions.AddArguments("--disable-infobars");
-            _driver = new FirefoxDriver("../../driver", ffOptions);
+            //FirefoxOptions ffOptions = new FirefoxOptions();            
+            //ffOptions.AddArguments("--start-maximized");
+            //ffOptions.AddArguments("--disable-infobars");
+            //_driver = new FirefoxDriver("../../driver", ffOptions);
 
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+            _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
         }
 
         [TestMethod()]        
@@ -65,20 +65,39 @@ namespace OnSolveAutomationProject
             fData.EmailAddress = "abc@bdc.com";
             fData.Date = "01/08/2018";
 
-            _objLogin = new LoginForm(_driver, _loginSiteUrl);
-            _objLogin.Login("secret");
+            try
+            {
+                TimeZoneInfo centralZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+                DateTime beforeSubmitDateTime = TimeZoneInfo.ConvertTime(DateTime.Now, centralZone).AddMinutes(-1);
 
-            DateTime beforeSubmitDateTime = DateTime.Parse(DateTime.Now.ToString(), new CultureInfo("en-US", false));
+                _objLogin = new LoginForm(_driver, _loginSiteUrl);
+                _objLogin.Login("secret");
 
-            _objHomePage = new SubmitForm(_driver);
-            _objHomePage.SubmitData(fData);
+                _objHomePage = new SubmitForm(_driver);
+                _objHomePage.SubmitData(fData);
 
-            _successSite = new ThankyouFormSite(_driver);
-            bool resSite = _successSite.NavigateDone();
-            Assert.IsTrue(resSite, "Submit Data is completed.");
+                _successSite = new ThankyouFormSite(_driver);
+                bool resSite = _successSite.NavigateDone();
+                if (resSite)
+                    TestContext.WriteLine("'Thank you' Site was displayed after submit data.");
+                else
+                    Assert.Fail("'Thank you' Site was not displayed after submit data.");
 
-            ValidateDataByAPIEndPoint(fData, beforeSubmitDateTime.ToString("yyyy-MM-dd HH:mm:ss"));
-            _driver.Close();
+                bool resVal = ValidateDataByAPIEndPoint(fData, beforeSubmitDateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                if(resVal)
+                    TestContext.WriteLine("The validating data by API EndPoint is successful.");
+                else
+                    Assert.Fail("The validating data by API EndPoint is unsuccessful.");
+                _driver.Close();
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+            finally
+            {
+                _driver.Close();
+            }
         }
 
         [TestMethod()]
@@ -97,26 +116,44 @@ namespace OnSolveAutomationProject
             fData.EmailAddress = context.DataRow["Email"].ToString();
             fData.Date = context.DataRow["Date"].ToString();
 
-            _objLogin = new LoginForm(_driver, _loginSiteUrl);
-            _objLogin.Login("secret");
+            try
+            {
+                TimeZoneInfo centralZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+                DateTime beforeSubmitDateTime = TimeZoneInfo.ConvertTime(DateTime.Now, centralZone).AddMinutes(-1);
 
-            DateTime beforeSubmitDateTime = DateTime.Parse(DateTime.Now.ToString(), new CultureInfo("en-US", false));
+                _objLogin = new LoginForm(_driver, _loginSiteUrl);
+                _objLogin.Login("secret");
+                
+                _objHomePage = new SubmitForm(_driver);
+                _objHomePage.SubmitData(fData);
 
-            _objHomePage = new SubmitForm(_driver);
-            _objHomePage.SubmitData(fData);
+                _successSite = new ThankyouFormSite(_driver);
+                bool resSite = _successSite.NavigateDone();
+                if (resSite)
+                    TestContext.WriteLine("'Thank you' Site was displayed after submit data.");
+                else
+                    Assert.Fail("'Thank you' Site was not displayed after submit data.");
 
-            _successSite = new ThankyouFormSite(_driver);
-            bool resSite = _successSite.NavigateDone();
-            Assert.IsTrue(resSite, "'Thank you' Site is displayed after submit data.");
-
-            ValidateDataByAPIEndPoint(fData, beforeSubmitDateTime.ToString("YYYY-MM-DD HH:mm:ss"));
-            _driver.Close();
+                bool resVal = ValidateDataByAPIEndPoint(fData, beforeSubmitDateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                if (resVal)
+                    TestContext.WriteLine("The validating data by API EndPoint is successful.");
+                else
+                    Assert.Fail("The validating data by API EndPoint is unsuccessful. Min datetime: " + beforeSubmitDateTime.ToString());
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Error happened : " + ex.Message);
+            }
+            finally
+            {
+                _driver.Close();
+            }
         }
 
         private bool ValidateDataByAPIEndPoint(FormData expectedFData, string dateTimeMin)
         {
             bool bRes = false;
-            FormSiteAPI site = new FormSiteAPI("https://fs28.formsite.com/api/users/ecnvietnam/forms/form1/", "Qm8nO3h6auh7");
+            FormSiteAPI site = new FormSiteAPI(_apiDataUrl, "Qm8nO3h6auh7");
             List<FormData> fDatas = site.GetResultDataByMinDateTime(dateTimeMin);
             foreach (FormData data in fDatas)
             {
@@ -126,6 +163,7 @@ namespace OnSolveAutomationProject
                     break;
                 }
             }
+
             return bRes;
         }
     }
