@@ -14,13 +14,12 @@ namespace OnSolveAutomationProject.Model
     {
         private XDocument _xmlDocResult;
 
-        private string _apiUrl;
-        private string _apiKey;
+        private string _apiUrl = "https://fs28.formsite.com/api/users/ecnvietnam/forms/form1/";
+        private string _apiKey = "Qm8nO3h6auh7";
 
-        public FormSiteAPI(string apiUrl, string apiKey)
+        public FormSiteAPI()
         {
-            _apiUrl = apiUrl;
-            _apiKey = apiKey;
+           
         }
 
         public List<FormData> GetResultDataByMinDateTime(string dateTimeMin)
@@ -53,7 +52,7 @@ namespace OnSolveAutomationProject.Model
                 data.FirstName = datas[i];
                 data.LastName = datas[++i];
                 data.StreetAddress = datas[++i];
-                data.AddressLine2 = datas[i++];
+                data.AddressLine2 = datas[++i];
                 data.City = datas[++i];
                 data.State = datas[++i];
                 data.ZipCode = datas[++i];

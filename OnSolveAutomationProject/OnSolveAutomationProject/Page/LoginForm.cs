@@ -11,14 +11,15 @@ namespace OnSolveAutomationProject.Page
     public class LoginForm
     {
         IWebDriver _driver;
+        string _loginUrl = "https://fs28.formsite.com/ecnvietnam/form1/index.html";
         By _labelTitle = By.CssSelector("div.segment_header");
         By _txtPassword = By.Id("Password");
         By _btnSubmit = By.Name("Submit");
 
-        public LoginForm(IWebDriver driver, String url)
+        public LoginForm(IWebDriver driver)
         {
             this._driver = driver;
-            _driver.Url = url;            
+            _driver.Url = _loginUrl;            
         }
 
         public void SetPassword(string password)

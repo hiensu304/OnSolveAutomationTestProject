@@ -22,8 +22,6 @@ namespace OnSolveAutomationProject
         LoginForm _objLogin;
         SubmitForm _objHomePage;
         ThankyouFormSite _successSite;
-        string _loginSiteUrl = "https://fs28.formsite.com/ecnvietnam/form1/index.html";
-        string _apiDataUrl = "https://fs28.formsite.com/api/users/ecnvietnam/forms/form1/";
         
         private TestContext context;
 
@@ -39,12 +37,12 @@ namespace OnSolveAutomationProject
             ChromeOptions chrOptions = new ChromeOptions();
             chrOptions.AddArguments("start-maximized");
             chrOptions.AddArguments("disable-infobars");
-            _driver = new ChromeDriver("../../driver", chrOptions);
+            _driver = new ChromeDriver("../../../packages/driver", chrOptions);
 
             //FirefoxOptions ffOptions = new FirefoxOptions();            
             //ffOptions.AddArguments("--start-maximized");
             //ffOptions.AddArguments("--disable-infobars");
-            //_driver = new FirefoxDriver("../../driver", ffOptions);
+            //_driver = new FirefoxDriver("../../../packages/driver", ffOptions);
 
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
@@ -70,7 +68,7 @@ namespace OnSolveAutomationProject
                 TimeZoneInfo centralZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
                 DateTime beforeSubmitDateTime = TimeZoneInfo.ConvertTime(DateTime.Now, centralZone).AddMinutes(-1);
 
-                _objLogin = new LoginForm(_driver, _loginSiteUrl);
+                _objLogin = new LoginForm(_driver);
                 _objLogin.Login("secret");
 
                 _objHomePage = new SubmitForm(_driver);
@@ -121,7 +119,7 @@ namespace OnSolveAutomationProject
                 TimeZoneInfo centralZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
                 DateTime beforeSubmitDateTime = TimeZoneInfo.ConvertTime(DateTime.Now, centralZone).AddMinutes(-1);
 
-                _objLogin = new LoginForm(_driver, _loginSiteUrl);
+                _objLogin = new LoginForm(_driver);
                 _objLogin.Login("secret");
                 
                 _objHomePage = new SubmitForm(_driver);
@@ -142,7 +140,7 @@ namespace OnSolveAutomationProject
             }
             catch (Exception ex)
             {
-                Assert.Fail("Error happened : " + ex.Message);
+                Assert.Fail(ex.Message);
             }
             finally
             {
@@ -153,7 +151,7 @@ namespace OnSolveAutomationProject
         private bool ValidateDataByAPIEndPoint(FormData expectedFData, string dateTimeMin)
         {
             bool bRes = false;
-            FormSiteAPI site = new FormSiteAPI(_apiDataUrl, "Qm8nO3h6auh7");
+            FormSiteAPI site = new FormSiteAPI();
             List<FormData> fDatas = site.GetResultDataByMinDateTime(dateTimeMin);
             foreach (FormData data in fDatas)
             {
