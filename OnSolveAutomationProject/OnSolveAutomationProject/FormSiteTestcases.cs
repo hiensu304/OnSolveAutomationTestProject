@@ -34,15 +34,15 @@ namespace OnSolveAutomationProject
         [TestInitialize]
         public void TestInitialized()
         {
-            ChromeOptions chrOptions = new ChromeOptions();
-            chrOptions.AddArguments("start-maximized");
-            chrOptions.AddArguments("disable-infobars");
-            _driver = new ChromeDriver("../../../packages/driver", chrOptions);
+            //ChromeOptions chrOptions = new ChromeOptions();
+            //chrOptions.AddArguments("start-maximized");
+            //chrOptions.AddArguments("disable-infobars");
+            //_driver = new ChromeDriver("../../../packages/driver", chrOptions);
 
-            //FirefoxOptions ffOptions = new FirefoxOptions();            
-            //ffOptions.AddArguments("--start-maximized");
-            //ffOptions.AddArguments("--disable-infobars");
-            //_driver = new FirefoxDriver("../../../packages/driver", ffOptions);
+            FirefoxOptions ffOptions = new FirefoxOptions();
+            ffOptions.AddArguments("--start-maximized");
+            ffOptions.AddArguments("--disable-infobars");
+            _driver = new FirefoxDriver("../../../packages/driver", ffOptions);
 
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
@@ -61,7 +61,7 @@ namespace OnSolveAutomationProject
             fData.ZipCode = "3242";
             fData.PhoneNumber = "123456789456";
             fData.EmailAddress = "abc@bdc.com";
-            fData.Date = "01/08/2018";
+            fData.Date = "08/01/2018";
 
             try
             {
